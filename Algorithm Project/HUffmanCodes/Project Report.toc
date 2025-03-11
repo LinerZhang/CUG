@@ -1,0 +1,17 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Description of the Project}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Program Instruction}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Program Demonstration}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Algorithm Design}{6}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Data Processing}{7}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Huffman Tree Construction}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Huffman Dict Construction}{10}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Huffman Encoding}{11}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Optimal Huffman Solution}{12}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Huffman Tree Visualization}{14}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Huffman Decoding}{15}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.8}Main Function Implementation}{16}{subsection.2.8}%
+\contentsline {section}{\numberline {3}Algorithm Analysis}{17}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Space Complexity}{18}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Time Complexity}{18}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Discussions and Conclusions}{19}{section.4}%
