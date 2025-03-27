@@ -1,0 +1,11 @@
+﻿  课程设计.cpp
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(44,30): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(187,4): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(199,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(221,4): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(241,4): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(277,15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(411,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(476,20): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\C data\课程设计！！！\课程设计！！！\课程设计.cpp(311,1): warning C4715: “Begin_page”: 不是所有的控件路径都返回值
+  课程设计！！！.vcxproj -> D:\C data\课程设计！！！\x64\Debug\课程设计！！！.exe
