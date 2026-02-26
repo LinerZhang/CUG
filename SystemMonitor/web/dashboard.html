@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>System Monitor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 18px; }
+    .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 12px; }
+    .small { color:#666; font-size: 12px; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { border-bottom:1px solid #eee; padding:6px; text-align:left; font-size: 13px; }
+    button { padding: 7px 10px; cursor:pointer; }
+    .warn { color: #b45309; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h2>System Monitor (Lin'er Zhang)</h2>
+
+  <div class="row">
+    <div class="small" id="ts">time: -</div>
+    <button onclick="makeReport()">Generate Report</button>
+    <a class="small" href="/report" target="_blank">Open Report</a>
+    <span class="small" id="reportStatus"></span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>CPU % (last 60s)</h3>
+      <canvas id="cpuChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Memory % (last 60s)</h3>
+      <canvas id="memChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Load1 (last 60s)</h3>
+      <canvas id="loadChart"></canvas>
+      <div class="small" id="loadText">load: -</div>
+    </div>
+    <div class="card">
+      <h3>Network Recv (KB/s, last 60s)</h3>
+      <canvas id="netChart"></canvas>
+      <div class="small" id="netText">net: -</div>
+    </div>
+
+    <div class="card">
+      <h3>Linux Memory Details</h3>
+      <div class="small" id="memLinux">-</div>
+      <h3 style="margin-top:10px;">Process States</h3>
+      <div class="small" id="procStates">-</div>
+    </div>
+
+    <div class="card">
+      <h3 class="warn">Recent Alarms</h3>
+      <table id="alarmTable"></table>
+    </div>
+
+    <div class="card">
+      <h3>Top CPU Processes</h3>
+      <table id="topCpu"></table>
+    </div>
+
+    <div class="card">
+      <h3>Top Memory Processes</h3>
+      <table id="topMem"></table>
+    </div>
+  </div>
+
+<script>
+  function makeLineChart(canvasId, label, ymin, ymax){
+    const ctx = document.getElementById(canvasId);
+    return new Chart(ctx, {
+      type: 'line',
+      data: { labels: [], datasets: [{ label, data: [] }] },
+      options: { animation: false, scales: { y: { min: ymin, max: ymax } } }
+    });
+  }
+
+  const cpuChart = makeLineChart('cpuChart', 'CPU %', 0, 100);
+  const memChart = makeLineChart('memChart', 'MEM %', 0, 100);
+  const loadChart = makeLineChart('loadChart', 'Load1', 0, undefined);
+  const netChart  = makeLineChart('netChart',  'Recv KB/s', 0, undefined);
+
+  function renderProcTable(el, items){
+    let html = "<tr><th>PID</th><th>Name</th><th>Status</th><th>CPU%</th><th>RSS(MB)</th></tr>";
+    for(const it of items){
+      html += `<tr>
+        <td>${it.pid}</td>
+        <td title="${(it.cmdline||'').replaceAll('"','&quot;')}">${it.name}</td>
+        <td>${it.status || ''}</td>
+        <td>${Number(it.cpu_percent).toFixed(1)}</td>
+        <td>${Number(it.rss_mb).toFixed(1)}</td>
+      </tr>`;
+    }
+    el.innerHTML = html;
+  }
+
+  function renderAlarms(el, alarms){
+    let html = "<tr><th>time</th><th>key</th><th>value</th><th>message</th></tr>";
+    for(const a of alarms){
+      const t = new Date(a.ts*1000).toLocaleTimeString();
+      html += `<tr>
+        <td>${t}</td><td>${a.key}</td><td>${Number(a.value).toFixed(2)}</td><td>${a.message}</td>
+      </tr>`;
+    }
+    el.innerHTML = html;
+  }
+
+  function updateCharts(history){
+    const labels = history.map(x => new Date(x.ts*1000).toLocaleTimeString());
+
+    cpuChart.data.labels = labels;
+    memChart.data.labels = labels;
+    loadChart.data.labels = labels;
+    netChart.data.labels  = labels;
+
+    cpuChart.data.datasets[0].data = history.map(x => x.cpu_percent);
+    memChart.data.datasets[0].data = history.map(x => x.mem_percent);
+    loadChart.data.datasets[0].data = history.map(x => x.linux.load1);
+    netChart.data.datasets[0].data  = history.map(x => x.net_recv_bps / 1024);
+
+    cpuChart.update();
+    memChart.update();
+    loadChart.update();
+    netChart.update();
+  }
+
+  async function tick(){
+    const r = await fetch("/api/history?limit=60");
+    const j = await r.json();
+    if(!j.ok || j.data.length === 0) return;
+
+    const hist = j.data;
+    updateCharts(hist);
+
+    const latest = hist[hist.length-1];
+    document.getElementById("ts").innerText = "time: " + new Date(latest.ts*1000).toLocaleString();
+
+    document.getElementById("loadText").innerText =
+      `load: ${latest.linux.load1.toFixed(2)} / ${latest.linux.load5.toFixed(2)} / ${latest.linux.load15.toFixed(2)}`;
+
+    document.getElementById("netText").innerText =
+      `recv: ${(latest.net_recv_bps/1024).toFixed(1)} KB/s, sent: ${(latest.net_sent_bps/1024).toFixed(1)} KB/s`;
+
+    document.getElementById("memLinux").innerText =
+      `Cached: ${latest.linux.mem_cached_mb.toFixed(1)} MB | Buffers: ${latest.linux.mem_buffers_mb.toFixed(1)} MB | Available: ${latest.linux.mem_available_mb.toFixed(1)} MB`;
+
+    const states = latest.linux.proc_state_counts;
+    const stateText = Object.keys(states).sort().map(k => `${k}:${states[k]}`).join("  ");
+    document.getElementById("procStates").innerText = stateText || "-";
+
+    renderProcTable(document.getElementById("topCpu"), latest.top_cpu);
+    renderProcTable(document.getElementById("topMem"), latest.top_mem);
+
+    // alarms
+    const ar = await fetch("/api/alarms?limit=12");
+    const aj = await ar.json();
+    if(aj.ok) renderAlarms(document.getElementById("alarmTable"), aj.data);
+  }
+
+  async function makeReport(){
+    document.getElementById("reportStatus").innerText = "Generating...";
+    const r = await fetch("/api/report", {method:"POST"});
+    const j = await r.json();
+    document.getElementById("reportStatus").innerText = j.ok ? ("Saved: " + j.path) : "Failed";
+  }
+
+  setInterval(tick, 1000);
+  tick();
+</script>
+</body>
+</html>

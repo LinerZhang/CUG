@@ -1,0 +1,5 @@
+{"ts":1772096262.8197849,"level":"WARN","key":"CPU_HIGH","value":100.0,"message":"CPU_HIGH >= 80.0 for 10s (value=100.00)"}
+{"ts":1772096267.216767,"level":"WARN","key":"LOAD1_HIGH","value":7.3,"message":"LOAD1_HIGH >= 4.0 for 10s (value=7.30)"}
+{"ts":1772096278.9107833,"level":"WARN","key":"LOAD1_HIGH","value":6.17,"message":"LOAD1_HIGH >= 4.0 for 10s (value=6.17)"}
+{"ts":1772096290.9885979,"level":"WARN","key":"LOAD1_HIGH","value":5.22,"message":"LOAD1_HIGH >= 4.0 for 10s (value=5.22)"}
+{"ts":1772096302.6308084,"level":"WARN","key":"LOAD1_HIGH","value":4.07,"message":"LOAD1_HIGH >= 4.0 for 10s (value=4.07)"}
